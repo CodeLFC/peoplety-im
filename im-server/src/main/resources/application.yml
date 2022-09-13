@@ -1,0 +1,61 @@
+logging:
+  level:
+    root: INFO
+#------spring
+spring:
+  application:
+    name: app-peoplety-im
+  #redis配置
+  #Redis服务器IP地址
+  redis:
+    host: 127.0.0.1
+    #Redis服务器端口号
+    port: 6379
+    #连接超时时间（毫秒）
+    timeout: 5000
+    #Redis数据库索引（默认为0）
+    database: 1
+    jedis:
+      pool:
+        #Jedis连接池最大连接数（使用负值表示没有限制）
+        max-active: 50
+        #Jedis连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 3000
+        #Jedis连接池中的最大空闲连接数
+        max-idle: 20
+        #Jedis连接池中的最小空闲连接数
+        min-idle: 2
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+
+server:
+  port: 8200
+  servlet:
+    context-path: "/"
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://gaozhi.online:8080/eureka/
+  instance:
+    instance-id: peoplety-im
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 2
+http:
+  encoding:
+    charset: UTF-8
+    enabled: true
+    force: true
+# ---- imConfig
+imConfig:
+  udpPort: 7901
+  tcpPort: 8901
+  webSocketPort: 9901
+  loginURL: im://gaozhi.online/general/login
+  failedURL: im://gaozhi.online/general/failed
