@@ -115,7 +115,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
     }
 
     /**
-     * 收到客户端发送给“服务端”的数据回调通知（即：消息路径为“C2S”的消息）前的处理逻辑。
+     * 收到客户端发送给“服务端”的数据 回调通知（即：消息路径为“C2S”的消息）前的处理逻辑。
      * <p>
      * <b>本方法的默认实现</b>：<font color="green">当开发者不需要本方法进行额外逻辑处理时，请直接返回true即可！</font>
      * <p>
@@ -129,6 +129,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public boolean onTransferMessage4C2CBefore(Protocal p, Channel session) {
+        p.setFp(String.valueOf(Message.generateId()));
         return true;
     }
 

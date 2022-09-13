@@ -30,8 +30,8 @@ import org.springframework.context.annotation.ComponentScan;
 //        禁止mongodb自动装配
         MongoAutoConfiguration.class,
 //        禁止redis自动装配
-        RedisAutoConfiguration.class,
-        RedisRepositoriesAutoConfiguration.class,
+//        RedisAutoConfiguration.class,
+//        RedisRepositoriesAutoConfiguration.class,
 //        禁止rabbitmq自动装配
 //        RabbitAutoConfiguration.class
 })
