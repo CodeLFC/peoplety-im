@@ -130,6 +130,7 @@ public class ServerToolKits {
     }
 
     public static String getClientIp(Channel session) {
+        if(session ==null)return "127.0.0.1";
         InetSocketAddress ipSocket = (InetSocketAddress) session.remoteAddress();
         return ipSocket.getAddress().getHostAddress();
     }

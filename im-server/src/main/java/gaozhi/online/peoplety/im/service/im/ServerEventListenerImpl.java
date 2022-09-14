@@ -49,6 +49,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
     private IMConfig imConfig;
     @Autowired
     private UserService userService;
+
     /**
      * 用户身份验证回调方法定义（即验证客户端连接的合法性，合法就允许正常能信，否则断开）.
      * <p>
@@ -71,18 +72,19 @@ public class ServerEventListenerImpl implements ServerEventListener {
     public int onUserLoginVerify(String userId, String token, String extra, Channel session) {
         logger.info("【DEBUG_回调通知】正在调用回调方法：onUserLoginVerify...(extra=" + extra + ")");
         String clientIp = ServerToolKits.getClientIp(session);
-        logger.info("onUserLoginVerify:clientIP={}", clientIp);
         //验证用户是否登陆
         try {
             Result result = userService.checkAuth(token, imConfig.getLoginURL(), clientIp);
-            logger.info("onUserLoginVerify:token={},result={}", token,result);
+            logger.info("onUserLoginVerify:token={},result={}", token, result);
             return result.getCode() == Result.SUCCESSResultEnum.SUCCESS.code() ? 0 : result.getCode() + 1025;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            logger.error("onUserLoginVerify exception:{}",e.getMessage());
+            logger.error("onUserLoginVerify exception:{}", e.getMessage());
         }
-        return 0;
+        //登陆失败
+        return 1025;
     }
+
     /**
      * 用户登录验证成功后的回调方法定义（在业务上可理解为该用户的上线通知）.
      * <p>
@@ -96,7 +98,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public void onUserLoginSuccess(String userId, String extra, Channel session) {
-        logger.debug("【IM_回调通知onUserLoginSucess】用户：" + userId + " 上线了！");
+        logger.info("【IM_回调通知onUserLoginSuccess】用户：" + userId + " 上线了！");
     }
 
     /**
@@ -111,7 +113,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public void onUserLogout(String userId, Channel session, int beKickoutCode) {
-        logger.debug("【DEBUG_回调通知onUserLogout】用户：" + userId + " 离线了（beKickoutCode=" + beKickoutCode + "）！");
+        logger.info("【DEBUG_回调通知onUserLogout】用户：" + userId + " 离线了（beKickoutCode=" + beKickoutCode + "）！");
     }
 
     /**
@@ -129,7 +131,8 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public boolean onTransferMessage4C2CBefore(Protocal p, Channel session) {
-        p.setFp(String.valueOf(Message.generateId()));
+        //生成唯一ID
+        generateProtocolId(p);
         return true;
     }
 
@@ -148,6 +151,8 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public boolean onTransferMessage4C2SBefore(Protocal p, Channel session) {
+        //生成唯一ID
+        generateProtocolId(p);
         return true;
     }
 
@@ -178,7 +183,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
         // 【重要】用户定义的消息或指令协议类型（开发者可据此类型来区分具体的消息或指令）
         int typeu = p.getTypeu();
 
-        logger.debug("【DEBUG_回调通知】[typeu=" + typeu + "]收到了客户端" + from_user_id + "发给服务端的消息：str=" + dataContent);
+        logger.info("【DEBUG_回调通知】[typeu=" + typeu + "]收到了客户端" + from_user_id + "发给服务端的消息：str=" + dataContent);
         return true;
     }
 
@@ -210,7 +215,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
         // 【重要】用户定义的消息或指令协议类型（开发者可据此类型来区分具体的消息或指令）
         int typeu = p.getTypeu();
 
-        logger.debug("【DEBUG_回调通知】[typeu=" + typeu + "]收到了客户端" + from_user_id + "发给客户端" + userId + "的消息：str=" + dataContent);
+        logger.info("【DEBUG_回调通知】[typeu=" + typeu + "]收到了客户端" + from_user_id + "发给客户端" + userId + "的消息：str=" + dataContent);
     }
 
     /**
@@ -276,12 +281,20 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public boolean onTransferMessage_RealTimeSendFail(Protocal p) {
-        // 接收者uid
-        String userId = p.getTo();
+        // 发送者uid
+        String userId = p.getFrom();
         Channel session = OnlineProcessor.getInstance().getOnlineSession(userId);
         String token = OnlineProcessor.getUserTokenFromChannel(session);
         Message message = MessageUtils.toMessage(p);
-        Result result = userService.postMessage(token, imConfig.getFailedURL(), ServerToolKits.getClientIp(session), message);
+        logger.info("离线处理消息：{}，接收者uid={},token={}", message.getId(), userId, token);
+        Result result = null;
+        try {
+            result = userService.postMessage(token, imConfig.getFailedURL(), ServerToolKits.getClientIp(session), message);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        logger.info("离线处理消息 Result:{}", result);
         return result.getCode() == Result.SUCCESSResultEnum.SUCCESS.code();
     }
 
@@ -295,5 +308,13 @@ public class ServerEventListenerImpl implements ServerEventListener {
     @Override
     public void onTransferMessage4C2C_AfterBridge(Protocal p) {
         // 默认本方法可
+    }
+
+    /**
+     * 生成消息ID
+     */
+    private void generateProtocolId(Protocal protocal) {
+        protocal.setFp(String.valueOf(Message.generateId()));
+        logger.info("生成消息的指纹ID：{}", protocal.getFp());
     }
 }

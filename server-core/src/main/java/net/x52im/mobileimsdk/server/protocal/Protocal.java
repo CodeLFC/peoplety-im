@@ -29,6 +29,7 @@ public class Protocal {
     protected String fp = null;
     protected boolean QoS = false;
     protected int typeu = -1;
+    protected int typeMsg = -1;
     protected transient int retryCount = 0;
     protected long sm = -1;
 
@@ -57,6 +58,14 @@ public class Protocal {
         this.QoS = QoS;
         this.typeu = typeu;
         fp = fingerPrint;
+    }
+
+    public int getTypeMsg() {
+        return typeMsg;
+    }
+
+    public void setTypeMsg(int typeMsg) {
+        this.typeMsg = typeMsg;
     }
 
     public int getType() {

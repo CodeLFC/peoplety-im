@@ -19,7 +19,7 @@ public class MessageUtils {
         //一级消息类型
         message.setType(protocal.getTypeu());
         //消息内容类型
-        message.setTypeMsg(protocal.getType());
+        message.setTypeMsg(protocal.getTypeMsg());
 
         //消息来自
         message.setFromId(Long.parseLong(protocal.getFrom()));
@@ -38,10 +38,10 @@ public class MessageUtils {
         Protocal protocal = new Protocal();
         //消息id
         protocal.setFp(String.valueOf(message.getId()));
+        //消息小类
+        protocal.setTypeMsg(message.getTypeMsg());
         //消息大类
         protocal.setTypeu(message.getType());
-        //消息小类
-        protocal.setType(message.getTypeMsg());
 
         //消息来自和发往
         protocal.setFrom(String.valueOf(message.getFromId()));
