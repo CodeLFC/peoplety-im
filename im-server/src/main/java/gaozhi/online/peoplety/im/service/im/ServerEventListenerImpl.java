@@ -282,7 +282,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
         Channel session = OnlineProcessor.getInstance().getOnlineSession(userId);
         String token = OnlineProcessor.getUserTokenFromChannel(session);
         Message message = MessageUtils.toMessage(p);
-        logger.info("离线处理消息：{}，接收者uid={},token={}", message.getId(), userId, token);
+        logger.info("离线处理消息：{}，接收者uid={}", message.getId(), userId);
         Result result = null;
         try {
             result = userService.postMessage(token, imConfig.getFailedURL(), ServerToolKits.getClientIp(session), message);
