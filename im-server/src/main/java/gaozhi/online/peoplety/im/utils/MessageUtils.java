@@ -1,7 +1,7 @@
 package gaozhi.online.peoplety.im.utils;
 
 import gaozhi.online.peoplety.entity.Message;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
 
 /**
  * @author http://gaozhi.online
@@ -10,49 +10,49 @@ import net.x52im.mobileimsdk.server.protocal.Protocal;
  * @date 2022/9/11 22:15
  */
 public class MessageUtils {
-    public static Message toMessage(Protocal protocal) {
+    public static Message toMessage(Protocol protocol) {
         Message message = new Message();
 
         //消息唯一识别码
-        message.setId(Long.parseLong(protocal.getFp()));
+        message.setId(Long.parseLong(protocol.getFp()));
 
         //一级消息类型
-        message.setType(protocal.getTypeu());
+        message.setType(protocol.getTypeu());
         //消息内容类型
-        message.setTypeMsg(protocal.getTypeMsg());
+        message.setTypeMsg(protocol.getTypeMsg());
 
         //消息来自
-        message.setFromId(Long.parseLong(protocal.getFrom()));
+        message.setFromId(Long.parseLong(protocol.getFrom()));
         //消息发往
-        message.setToId(Long.parseLong(protocal.getTo()));
+        message.setToId(Long.parseLong(protocol.getTo()));
 
         //消息内容
-        message.setMsg(protocal.getDataContent());
-        message.setRemark(protocal.getRemark());
+        message.setMsg(protocol.getDataContent());
+        message.setRemark(protocol.getRemark());
         //消息时间
-        message.setTime(protocal.getSm());
+        message.setTime(protocol.getSm());
         return message;
     }
 
-    public static Protocal toProtocol(Message message) {
-        Protocal protocal = new Protocal();
+    public static Protocol toProtocol(Message message) {
+        Protocol protocol = new Protocol();
         //消息id
-        protocal.setFp(String.valueOf(message.getId()));
+        protocol.setFp(String.valueOf(message.getId()));
         //消息小类
-        protocal.setTypeMsg(message.getTypeMsg());
+        protocol.setTypeMsg(message.getTypeMsg());
         //消息大类
-        protocal.setTypeu(message.getType());
+        protocol.setTypeu(message.getType());
 
         //消息来自和发往
-        protocal.setFrom(String.valueOf(message.getFromId()));
-        protocal.setTo(String.valueOf(message.getToId()));
+        protocol.setFrom(String.valueOf(message.getFromId()));
+        protocol.setTo(String.valueOf(message.getToId()));
 
         //消息内容
-        protocal.setDataContent(message.getMsg());
-        protocal.setRemark(message.getRemark());
+        protocol.setDataContent(message.getMsg());
+        protocol.setRemark(message.getRemark());
         //消息时间
-        protocal.setSm(message.getTime());
+        protocol.setSm(message.getTime());
         //消息时间
-        return protocal;
+        return protocol;
     }
 }

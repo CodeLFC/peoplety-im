@@ -22,7 +22,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.ReadTimeoutException;
 import net.x52im.mobileimsdk.server.ServerCoreHandler;
 import net.x52im.mobileimsdk.server.network.Gateway;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
 import net.x52im.mobileimsdk.server.utils.ServerToolKits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +66,7 @@ public class MBTCPClientInboundHandler extends SimpleChannelInboundHandler<ByteB
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, ByteBuf bytebuf) throws Exception {
-    	Protocal pFromClient = ServerToolKits.fromIOBuffer(bytebuf);
+    	Protocol pFromClient = ServerToolKits.fromIOBuffer(bytebuf);
 		serverCoreHandler.messageReceived(ctx.channel(), pFromClient);
 	}
 }

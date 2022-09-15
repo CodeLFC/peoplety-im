@@ -23,7 +23,7 @@ import net.x52im.mobileimsdk.server.network.Gateway;
 import net.x52im.mobileimsdk.server.network.MBObserver;
 import net.x52im.mobileimsdk.server.processor.BridgeProcessor;
 import net.x52im.mobileimsdk.server.processor.OnlineProcessor;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
 import net.x52im.mobileimsdk.server.qos.QoS4ReciveDaemonC2S;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class GlobalSendHelper
 	private static Logger logger = LoggerFactory.getLogger(ServerCoreHandler.class);  
 
 	public static void sendDataC2C(final BridgeProcessor bridgeProcessor
-			, final Channel session, final Protocal pFromClient, final String remoteAddress
+			, final Channel session, final Protocol pFromClient, final String remoteAddress
 			, final ServerCoreHandler serverCoreHandler) throws Exception
 	{
 		// TODO just for DEBUG
@@ -152,7 +152,7 @@ public class GlobalSendHelper
 		}
 	}
 	
-	public static void sendDataS2C(BridgeProcessor bridgeProcessor, Protocal pFromClient, final MBObserver resultObserver) throws Exception
+	public static void sendDataS2C(BridgeProcessor bridgeProcessor, Protocol pFromClient, final MBObserver resultObserver) throws Exception
 	{
 		// TODO just for DEBUG
 		OnlineProcessor.getInstance().__printOnline();

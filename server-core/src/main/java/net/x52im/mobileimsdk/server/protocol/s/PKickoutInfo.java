@@ -12,37 +12,41 @@
  *  
  * "即时通讯网(52im.net) - 即时通讯开发者社区!" 推荐开源工程。
  * 
- * PLoginInfoResponse.java at 2022-7-12 16:35:59, code by Jack Jiang.
+ * PKickoutInfo.java at 2022-7-12 16:35:57, code by Jack Jiang.
  */
-package net.x52im.mobileimsdk.server.protocal.s;
+package net.x52im.mobileimsdk.server.protocol.s;
 
-public class PLoginInfoResponse
+public class PKickoutInfo
 {
-	protected int code = 0;
+	public final static int KICKOUT_FOR_DUPLICATE_LOGIN = 1;
+	public final static int KICKOUT_FOR_ADMIN = 2;
 	
-	protected long firstLoginTime = 0;
-	public PLoginInfoResponse(int code, long firstLoginTime)
+	protected int code = -1;
+	protected String reason = null;
+	
+	public PKickoutInfo(int code, String reason)
 	{
 		this.code = code;
-		this.firstLoginTime = firstLoginTime;
+		this.reason = reason;
 	}
 
 	public int getCode()
 	{
 		return code;
 	}
+
 	public void setCode(int code)
 	{
 		this.code = code;
 	}
 
-	public long getFirstLoginTime()
+	public String getReason()
 	{
-		return firstLoginTime;
+		return reason;
 	}
 
-	public void setFirstLoginTime(long firstLoginTime)
+	public void setReason(String reason)
 	{
-		this.firstLoginTime = firstLoginTime;
+		this.reason = reason;
 	}
 }

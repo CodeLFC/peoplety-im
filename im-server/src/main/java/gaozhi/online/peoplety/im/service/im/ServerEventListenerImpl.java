@@ -22,16 +22,14 @@ import gaozhi.online.peoplety.im.config.IMConfig;
 import gaozhi.online.peoplety.im.service.UserService;
 import gaozhi.online.peoplety.im.utils.MessageUtils;
 import io.netty.channel.Channel;
-import io.netty.util.AttributeKey;
 import net.x52im.mobileimsdk.server.event.ServerEventListener;
 import net.x52im.mobileimsdk.server.processor.OnlineProcessor;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
-import net.x52im.mobileimsdk.server.protocal.s.PKickoutInfo;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
+import net.x52im.mobileimsdk.server.protocol.s.PKickoutInfo;
 import net.x52im.mobileimsdk.server.utils.ServerToolKits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 
@@ -70,12 +68,10 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public int onUserLoginVerify(String userId, String token, String extra, Channel session) {
-        logger.info("【DEBUG_回调通知】正在调用回调方法：onUserLoginVerify...(extra=" + extra + ")");
         String clientIp = ServerToolKits.getClientIp(session);
         //验证用户是否登陆
         try {
             Result result = userService.checkAuth(token, imConfig.getLoginURL(), clientIp);
-            logger.info("onUserLoginVerify:token={},result={}", token, result);
             return result.getCode() == Result.SUCCESSResultEnum.SUCCESS.code() ? 0 : result.getCode() + 1025;
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,12 +121,12 @@ public class ServerEventListenerImpl implements ServerEventListener {
      *
      * @param p       消息/指令的完整协议包对象
      * @param session 消息发送者的“会话”引用（也就是客户端的网络连接对象）
-     * @return true表示经过本方法后将正常进入 {@link #onTransferMessage4C2S(Protocal, Channel)}继续正常逻辑  ，false表示该条指令将不会继续处理（直接被丢弃）
-     * @see #onTransferMessage4C2S(Protocal, Channel)
+     * @return true表示经过本方法后将正常进入 {@link #onTransferMessage4C2S(Protocol, Channel)}继续正常逻辑  ，false表示该条指令将不会继续处理（直接被丢弃）
+     * @see #onTransferMessage4C2S(Protocol, Channel)
      * @since 6.2
      */
     @Override
-    public boolean onTransferMessage4C2CBefore(Protocal p, Channel session) {
+    public boolean onTransferMessage4C2CBefore(Protocol p, Channel session) {
         //生成唯一ID
         generateProtocolId(p);
         return true;
@@ -145,12 +141,12 @@ public class ServerEventListenerImpl implements ServerEventListener {
      *
      * @param p       消息/指令的完整协议包对象
      * @param session 消息发送者的“会话”引用（也就是客户端的网络连接对象）
-     * @return true表示经过本方法后将正常进入 {@link #onTransferMessage4C2C(Protocal)}继续正常逻辑  ，false表示该条指令将不会继续处理（直接被丢弃）
-     * @see #onTransferMessage4C2C(Protocal)
+     * @return true表示经过本方法后将正常进入 {@link #onTransferMessage4C2C(Protocol)}继续正常逻辑  ，false表示该条指令将不会继续处理（直接被丢弃）
+     * @see #onTransferMessage4C2C(Protocol)
      * @since 6.2
      */
     @Override
-    public boolean onTransferMessage4C2SBefore(Protocal p, Channel session) {
+    public boolean onTransferMessage4C2SBefore(Protocol p, Channel session) {
         //生成唯一ID
         generateProtocolId(p);
         return true;
@@ -167,11 +163,11 @@ public class ServerEventListenerImpl implements ServerEventListener {
      * @param p       消息/指令的完整协议包对象
      * @param session 此客户端连接对应的 netty “会话”
      * @return true表示本方法已成功处理完成，否则表示未处理成功。此返回值目前框架中并没有特殊意义，仅作保留吧
-     * @see Protocal
+     * @see Protocol
      * @since 4.0
      */
     @Override
-    public boolean onTransferMessage4C2S(Protocal p, Channel session) {
+    public boolean onTransferMessage4C2S(Protocol p, Channel session) {
         // 接收者uid
         String userId = p.getTo();
         // 发送者uid
@@ -199,11 +195,11 @@ public class ServerEventListenerImpl implements ServerEventListener {
      * 作为消息的唯一标识ID进行去重处理。
      *
      * @param p 消息/指令的完整协议包对象
-     * @see Protocal
+     * @see Protocol
      * @since 4.0
      */
     @Override
-    public void onTransferMessage4C2C(Protocal p) {
+    public void onTransferMessage4C2C(Protocol p) {
         // 接收者uid
         String userId = p.getTo();
         // 发送者uid
@@ -275,12 +271,12 @@ public class ServerEventListenerImpl implements ServerEventListener {
      * （伪应答仅意味着不是接收方的实时应答，而只是存储到离线DB中，但在发送方看来也算是被对方收到，只是延
      * 迟收到而已（离线消息嘛））），否则表示应用层没有处理（如果此消息有QoS机制，则发送方在QoS重传机制超时
      * 后报出消息发送失败的提示）
-     * @see Protocal
-     * @see #onTransferMessage4C2C(Protocal)
+     * @see Protocol
+     * @see #onTransferMessage4C2C(Protocol)
      * @since 4.0
      */
     @Override
-    public boolean onTransferMessage_RealTimeSendFail(Protocal p) {
+    public boolean onTransferMessage_RealTimeSendFail(Protocol p) {
         // 发送者uid
         String userId = p.getFrom();
         Channel session = OnlineProcessor.getInstance().getOnlineSession(userId);
@@ -294,7 +290,6 @@ public class ServerEventListenerImpl implements ServerEventListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("离线处理消息 Result:{}", result);
         return result.getCode() == Result.SUCCESSResultEnum.SUCCESS.code();
     }
 
@@ -306,15 +301,15 @@ public class ServerEventListenerImpl implements ServerEventListener {
      * @since 6.2
      */
     @Override
-    public void onTransferMessage4C2C_AfterBridge(Protocal p) {
+    public void onTransferMessage4C2C_AfterBridge(Protocol p) {
         // 默认本方法可
     }
 
     /**
      * 生成消息ID
      */
-    private void generateProtocolId(Protocal protocal) {
-        protocal.setFp(String.valueOf(Message.generateId()));
-        logger.info("生成消息的指纹ID：{}", protocal.getFp());
+    private void generateProtocolId(Protocol protocol) {
+        protocol.setFp(String.valueOf(Message.generateId()));
+        logger.info("生成消息的指纹ID：{}", protocol.getFp());
     }
 }

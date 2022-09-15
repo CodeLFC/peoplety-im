@@ -23,8 +23,8 @@ import net.x52im.mobileimsdk.server.network.Gateway;
 import net.x52im.mobileimsdk.server.processor.BridgeProcessor;
 import net.x52im.mobileimsdk.server.processor.LogicProcessor;
 import net.x52im.mobileimsdk.server.processor.OnlineProcessor;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
-import net.x52im.mobileimsdk.server.protocal.ProtocalType;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
+import net.x52im.mobileimsdk.server.protocol.ProtocolType;
 import net.x52im.mobileimsdk.server.utils.LocalSendHelper;
 import net.x52im.mobileimsdk.server.utils.ServerToolKits;
 import org.slf4j.Logger;
@@ -53,12 +53,12 @@ public class ServerCoreHandler {
     protected BridgeProcessor createBridgeProcessor() {
         BridgeProcessor bp = new BridgeProcessor() {
             @Override
-            protected void realtimeC2CSuccessCallback(Protocal p) {
+            protected void realtimeC2CSuccessCallback(Protocol p) {
                 serverEventListener.onTransferMessage4C2C(p);
             }
 
             @Override
-            protected boolean offlineC2CProcessCallback(Protocal p) {
+            protected boolean offlineC2CProcessCallback(Protocol p) {
                 return serverEventListener.onTransferMessage_RealTimeSendFail(p);
             }
         };
@@ -76,11 +76,11 @@ public class ServerCoreHandler {
         session.close();
     }
 
-    public void messageReceived(Channel session, Protocal pFromClient) throws Exception {
+    public void messageReceived(Channel session, Protocol pFromClient) throws Exception {
         String remoteAddress = ServerToolKits.clientInfoToString(session);
 
         switch (pFromClient.getType()) {
-            case ProtocalType.C.FROM_CLIENT_TYPE_OF_RECIVED: {
+            case ProtocolType.C.FROM_CLIENT_TYPE_OF_RECIVED: {
                 logger.info("[IMCORE-{}]<< 收到客户端{}的ACK应答包发送请求.", Gateway.$(session), remoteAddress);
 
                 if (!OnlineProcessor.isLogined(session)) {
@@ -91,7 +91,7 @@ public class ServerCoreHandler {
                 logicProcessor.processACK(pFromClient, remoteAddress);
                 break;
             }
-            case ProtocalType.C.FROM_CLIENT_TYPE_OF_COMMON$DATA: {
+            case ProtocolType.C.FROM_CLIENT_TYPE_OF_COMMON$DATA: {
                 logger.info("[IMCORE-{}]<< 收到客户端{}的通用数据发送请求.", Gateway.$(session), remoteAddress);
 
                 if (serverEventListener != null) {
@@ -114,7 +114,7 @@ public class ServerCoreHandler {
                 }
                 break;
             }
-            case ProtocalType.C.FROM_CLIENT_TYPE_OF_KEEP$ALIVE: {
+            case ProtocolType.C.FROM_CLIENT_TYPE_OF_KEEP$ALIVE: {
                 if (!OnlineProcessor.isLogined(session)) {
                     LocalSendHelper.replyDataForUnlogined(session, pFromClient, null);
                     return;
@@ -124,17 +124,17 @@ public class ServerCoreHandler {
 
                 break;
             }
-            case ProtocalType.C.FROM_CLIENT_TYPE_OF_LOGIN: {
+            case ProtocolType.C.FROM_CLIENT_TYPE_OF_LOGIN: {
                 logicProcessor.processLogin(session, pFromClient, remoteAddress);
                 break;
             }
-            case ProtocalType.C.FROM_CLIENT_TYPE_OF_LOGOUT: {
+            case ProtocolType.C.FROM_CLIENT_TYPE_OF_LOGOUT: {
                 logger.info("[IMCORE-{}]<< 收到客户端{}的退出登陆请求.", Gateway.$(session), remoteAddress);
                 session.close();
                 break;
             }
-            case ProtocalType.C.FROM_CLIENT_TYPE_OF_ECHO: {
-                pFromClient.setType(ProtocalType.S.FROM_SERVER_TYPE_OF_RESPONSE$ECHO);
+            case ProtocolType.C.FROM_CLIENT_TYPE_OF_ECHO: {
+                pFromClient.setType(ProtocolType.S.FROM_SERVER_TYPE_OF_RESPONSE$ECHO);
                 LocalSendHelper.sendData(session, pFromClient, null);
                 break;
             }

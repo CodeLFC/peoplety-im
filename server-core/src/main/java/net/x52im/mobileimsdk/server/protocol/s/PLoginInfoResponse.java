@@ -12,38 +12,37 @@
  *  
  * "即时通讯网(52im.net) - 即时通讯开发者社区!" 推荐开源工程。
  * 
- * PErrorResponse.java at 2022-7-12 16:35:58, code by Jack Jiang.
+ * PLoginInfoResponse.java at 2022-7-12 16:35:59, code by Jack Jiang.
  */
-package net.x52im.mobileimsdk.server.protocal.s;
+package net.x52im.mobileimsdk.server.protocol.s;
 
-public class PErrorResponse
+public class PLoginInfoResponse
 {
-	protected int errorCode = -1;
-	protected String errorMsg = null;
+	protected int code = 0;
 	
-	public PErrorResponse(int errorCode, String errorMsg)
+	protected long firstLoginTime = 0;
+	public PLoginInfoResponse(int code, long firstLoginTime)
 	{
-		this.errorCode = errorCode;
-		this.errorMsg = errorMsg;
+		this.code = code;
+		this.firstLoginTime = firstLoginTime;
 	}
 
-	public int getErrorCode()
+	public int getCode()
 	{
-		return errorCode;
+		return code;
+	}
+	public void setCode(int code)
+	{
+		this.code = code;
 	}
 
-	public void setErrorCode(int errorCode)
+	public long getFirstLoginTime()
 	{
-		this.errorCode = errorCode;
+		return firstLoginTime;
 	}
 
-	public String getErrorMsg()
+	public void setFirstLoginTime(long firstLoginTime)
 	{
-		return errorMsg;
-	}
-
-	public void setErrorMsg(String errorMsg)
-	{
-		this.errorMsg = errorMsg;
+		this.firstLoginTime = firstLoginTime;
 	}
 }

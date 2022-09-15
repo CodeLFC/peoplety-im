@@ -18,7 +18,7 @@ package net.x52im.mobileimsdk.server.qos;
 
 import net.x52im.mobileimsdk.server.ServerLauncher;
 import net.x52im.mobileimsdk.server.network.MBObserver;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
 import net.x52im.mobileimsdk.server.utils.LocalSendHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class QoS4SendDaemonRoot
 	
 	private boolean DEBUG = false;
 	private ServerLauncher serverLauncher = null;
-	private ConcurrentSkipListMap<String, Protocal> sentMessages = new ConcurrentSkipListMap<String, Protocal>();
+	private ConcurrentSkipListMap<String, Protocol> sentMessages = new ConcurrentSkipListMap<String, Protocol>();
 	private ConcurrentMap<String, Long> sendMessagesTimestamp = new ConcurrentHashMap<String, Long>();
 	private int CHECH_INTERVAL = 5000;
 	private int MESSAGES_JUST$NOW_TIME = 2 * 1000;
@@ -66,7 +66,7 @@ public class QoS4SendDaemonRoot
 	{
 		if(!_excuting)
 		{
-			ArrayList<Protocal> lostMessages = new ArrayList<Protocal>();
+			ArrayList<Protocol> lostMessages = new ArrayList<Protocol>();
 			_excuting = true;
 			try
 			{
@@ -74,12 +74,12 @@ public class QoS4SendDaemonRoot
 					logger.debug("【IMCORE"+this.debugTag+"】【QoS发送方】====== 消息发送质量保证线程运行中, 当前需要处理的列表长度为"+sentMessages.size()+"...");
 
 				//** 遍历HashMap方法二（在大数据量情况下，方法二的性能要5倍优于方法一）
-				Iterator<Entry<String, Protocal>> entryIt = sentMessages.entrySet().iterator();  
+				Iterator<Entry<String, Protocol>> entryIt = sentMessages.entrySet().iterator();
 			    while(entryIt.hasNext())
 			    {  
-			        Entry<String, Protocal> entry = entryIt.next();  
+			        Entry<String, Protocol> entry = entryIt.next();
 			        String key = entry.getKey();  
-			        final Protocal p = entry.getValue();
+			        final Protocol p = entry.getValue();
 			        
 					if(p != null && p.isQoS())
 					{
@@ -89,7 +89,7 @@ public class QoS4SendDaemonRoot
 								logger.debug("【IMCORE"+this.debugTag+"】【QoS发送方】指纹为"+p.getFp()
 										+"的消息包重传次数已达"+p.getRetryCount()+"(最多"+QOS_TRY_COUNT+"次)上限，将判定为丢包！");
 
-							lostMessages.add((Protocal)p.clone());
+							lostMessages.add((Protocol)p.clone());
 							remove(p.getFp());
 						}
 						else
@@ -155,7 +155,7 @@ public class QoS4SendDaemonRoot
 		}
 	}
 	
-	protected void notifyMessageLost(ArrayList<Protocal> lostMessages)
+	protected void notifyMessageLost(ArrayList<Protocol> lostMessages)
 	{
 		if(serverLauncher != null && serverLauncher.getServerMessageQoSEventListener() != null)
 			serverLauncher.getServerMessageQoSEventListener().messagesLost(lostMessages);
@@ -205,7 +205,7 @@ public class QoS4SendDaemonRoot
 		return sentMessages.get(fingerPrint) != null;
 	}
 	
-	public void put(Protocal p)
+	public void put(Protocol p)
 	{
 		if(p == null)
 		{
@@ -246,7 +246,7 @@ public class QoS4SendDaemonRoot
 			Object result = sentMessages.remove(fingerPrint);
 			if(DEBUG)
 				logger.warn("【IMCORE"+this.debugTag+"】【QoS发送方】指纹为"+fingerPrint+"的消息已成功从发送质量保证队列中移除(可能是收到接收方的应答也可能是达到了重传的次数上限)，重试次数="
-						+(result != null?((Protocal)result).getRetryCount():"none呵呵."));
+						+(result != null?((Protocol)result).getRetryCount():"none呵呵."));
 		}
 		catch (Exception e)
 		{

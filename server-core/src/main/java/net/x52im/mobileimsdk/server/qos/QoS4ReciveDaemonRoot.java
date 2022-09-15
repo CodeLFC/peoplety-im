@@ -16,7 +16,7 @@
  */
 package net.x52im.mobileimsdk.server.qos;
 
-import net.x52im.mobileimsdk.server.protocal.Protocal;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +128,7 @@ public class QoS4ReciveDaemonRoot
 		return timer != null;
 	}
 	
-	public void addRecieved(Protocal p)
+	public void addRecieved(Protocol p)
 	{
 		if(p != null && p.isQoS())
 			addRecieved(p.getFp());

@@ -22,9 +22,9 @@ import net.x52im.mobileimsdk.server.network.GatewayTCP;
 import net.x52im.mobileimsdk.server.network.GatewayUDP;
 import net.x52im.mobileimsdk.server.network.GatewayWebsocket;
 import net.x52im.mobileimsdk.server.processor.OnlineProcessor;
-import net.x52im.mobileimsdk.server.protocal.CharsetHelper;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
-import net.x52im.mobileimsdk.server.protocal.ProtocalFactory;
+import net.x52im.mobileimsdk.server.protocol.CharsetHelper;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
+import net.x52im.mobileimsdk.server.protocol.ProtocolFactory;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -142,12 +142,12 @@ public class ServerToolKits {
         return jsonStr;
     }
 
-    public static Protocal fromIOBuffer(ByteBuf buffer) throws Exception {
+    public static Protocol fromIOBuffer(ByteBuf buffer) throws Exception {
         return toProtocal(fromIOBuffer_JSON(buffer));
     }
 
-    public static Protocal toProtocal(String protocalJSONStr) throws Exception {
-        return ProtocalFactory.parse(protocalJSONStr, Protocal.class);
+    public static Protocol toProtocal(String protocalJSONStr) throws Exception {
+        return ProtocolFactory.parse(protocalJSONStr, Protocol.class);
     }
 
     /**

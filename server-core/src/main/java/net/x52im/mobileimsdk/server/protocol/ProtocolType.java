@@ -14,18 +14,18 @@
  * 
  * ProtocalType.java at 2022-7-12 16:35:58, code by Jack Jiang.
  */
-package net.x52im.mobileimsdk.server.protocal;
+package net.x52im.mobileimsdk.server.protocol;
 
 /**
  * MobileIMSDK核心框架级的协议类型.
  * <p>
  * 这些协议类型由框架算法决定其意义和用途，不建议用户自行使用，用户
- * 自定义协议类型请参见 {@link Protocal} 类中的 typeu 字段。
+ * 自定义协议类型请参见 {@link Protocol} 类中的 typeu 字段。
  * 
  * @author Jack Jiang(http://www.52im.net/thread-2792-1-1.html)
  * @version 1.0
  */
-public interface ProtocalType
+public interface ProtocolType
 {
 	//------------------------------------------------------- from client
 	public interface C

@@ -18,8 +18,8 @@ package net.x52im.mobileimsdk.server.processor;
 
 import net.x52im.mobileimsdk.server.bridge.MQProvider;
 import net.x52im.mobileimsdk.server.network.MBObserver;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
-import net.x52im.mobileimsdk.server.protocal.ProtocalFactory;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
+import net.x52im.mobileimsdk.server.protocol.ProtocolFactory;
 import net.x52im.mobileimsdk.server.utils.LocalSendHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public abstract class BridgeProcessor extends MQProvider
 			// just log for debug
 			logger.info("[IMCORE-桥接↓] - [startWorker()中] 收到异构服务器的原始 msg："+msg+", 即时进行解析并桥接转发（给接收者）...");
 			
-			final Protocal p = ProtocalFactory.parse(msg, Protocal.class);
+			final Protocol p = ProtocolFactory.parse(msg, Protocol.class);
 			p.setQoS(true);   // 开启QoS支持，确保消息被送达客户端
 			p.setBridge(true);// 设置桥接发送标识（注意：此标识必须设置）
 			
@@ -95,6 +95,6 @@ public abstract class BridgeProcessor extends MQProvider
 		}
 	}
 	
-	protected abstract void realtimeC2CSuccessCallback(Protocal p);
-	protected abstract boolean offlineC2CProcessCallback(Protocal p);
+	protected abstract void realtimeC2CSuccessCallback(Protocol p);
+	protected abstract boolean offlineC2CProcessCallback(Protocol p);
 }

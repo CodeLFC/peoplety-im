@@ -14,7 +14,7 @@
  * 
  * CharsetHelper.java at 2022-7-12 16:35:58, code by Jack Jiang.
  */
-package net.x52im.mobileimsdk.server.protocal;
+package net.x52im.mobileimsdk.server.protocol;
 
 import java.io.UnsupportedEncodingException;
 

@@ -12,16 +12,11 @@
  *  
  * "即时通讯网(52im.net) - 即时通讯开发者社区!" 推荐开源工程。
  * 
- * MessageQoSEventListenerS2C.java at 2022-7-12 16:35:58, code by Jack Jiang.
+ * PKeepAlive.java at 2022-7-12 16:35:56, code by Jack Jiang.
  */
-package net.x52im.mobileimsdk.server.event;
+package net.x52im.mobileimsdk.server.protocol.c;
 
-import net.x52im.mobileimsdk.server.protocol.Protocol;
-
-import java.util.ArrayList;
-
-public interface MessageQoSEventListenerS2C
+public class PKeepAlive
 {
-	void messagesLost(ArrayList<Protocol> lostMessages);
-	void messagesBeReceived(String theFingerPrint);
+
 }

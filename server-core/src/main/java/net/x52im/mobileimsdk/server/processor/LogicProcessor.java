@@ -21,9 +21,9 @@ import net.x52im.mobileimsdk.server.ServerCoreHandler;
 import net.x52im.mobileimsdk.server.network.Gateway;
 import net.x52im.mobileimsdk.server.network.GatewayUDP;
 import net.x52im.mobileimsdk.server.network.MBObserver;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
-import net.x52im.mobileimsdk.server.protocal.ProtocalFactory;
-import net.x52im.mobileimsdk.server.protocal.c.PLoginInfo;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
+import net.x52im.mobileimsdk.server.protocol.ProtocolFactory;
+import net.x52im.mobileimsdk.server.protocol.c.PLoginInfo;
 import net.x52im.mobileimsdk.server.qos.QoS4ReciveDaemonC2S;
 import net.x52im.mobileimsdk.server.qos.QoS4SendDaemonS2C;
 import net.x52im.mobileimsdk.server.utils.GlobalSendHelper;
@@ -40,11 +40,11 @@ public class LogicProcessor {
     }
 
     public void processC2CMessage(BridgeProcessor bridgeProcessor,
-                                  Channel session, Protocal pFromClient, String remoteAddress) throws Exception {
+                                  Channel session, Protocol pFromClient, String remoteAddress) throws Exception {
         GlobalSendHelper.sendDataC2C(bridgeProcessor, session, pFromClient, remoteAddress, this.serverCoreHandler);
     }
 
-    public void processC2SMessage(Channel session, final Protocal pFromClient, String remoteAddress) throws Exception {
+    public void processC2SMessage(Channel session, final Protocol pFromClient, String remoteAddress) throws Exception {
         if (pFromClient.isQoS())// && processedOK)
         {
             boolean hasRecieved = QoS4ReciveDaemonC2S.getInstance().hasRecieved(pFromClient.getFp());
@@ -75,7 +75,7 @@ public class LogicProcessor {
         boolean processedOK = this.serverCoreHandler.getServerEventListener().onTransferMessage4C2S(pFromClient, session);
     }
 
-    public void processACK(final Protocal pFromClient, final String remoteAddress) throws Exception {
+    public void processACK(final Protocol pFromClient, final String remoteAddress) throws Exception {
         String theFingerPrint = pFromClient.getDataContent();
         logger.debug("[IMCORE-本机QoS！]【QoS机制_S2C】收到接收者" + pFromClient.getFrom() + "回过来的指纹为" + theFingerPrint + "的应答包.");
 
@@ -86,8 +86,8 @@ public class LogicProcessor {
         QoS4SendDaemonS2C.getInstance().remove(theFingerPrint);
     }
 
-    public void processLogin(final Channel session, final Protocal pFromClient, final String remoteAddress) throws Exception {
-        final PLoginInfo loginInfo = ProtocalFactory.parsePLoginInfo(pFromClient.getDataContent());
+    public void processLogin(final Channel session, final Protocol pFromClient, final String remoteAddress) throws Exception {
+        final PLoginInfo loginInfo = ProtocolFactory.parsePLoginInfo(pFromClient.getDataContent());
         logger.info("[IMCORE-{}]>> 客户端" + remoteAddress + "发过来的登陆信息内容是：uid={}、token={}、firstLoginTime={}"
                 , Gateway.$(session), loginInfo.getLoginUserId(), loginInfo.getLoginToken(), loginInfo.getFirstLoginTime());
 
@@ -121,7 +121,7 @@ public class LogicProcessor {
                         session.close();
                     };
 
-                    LocalSendHelper.sendData(session, ProtocalFactory.createPLoginInfoResponse(code, -1, "-1"), GatewayUDP.isUDPChannel(session) ? null : sendResultObserver);
+                    LocalSendHelper.sendData(session, ProtocolFactory.createPLoginInfoResponse(code, -1, "-1"), GatewayUDP.isUDPChannel(session) ? null : sendResultObserver);
                 }
             }
         } else {
@@ -148,13 +148,13 @@ public class LogicProcessor {
             }
 
         };
-        LocalSendHelper.sendData(session, ProtocalFactory.createPLoginInfoResponse(0, firstLoginTimeToClient, loginInfo.getLoginUserId()), sendResultObserver);
+        LocalSendHelper.sendData(session, ProtocolFactory.createPLoginInfoResponse(0, firstLoginTimeToClient, loginInfo.getLoginUserId()), sendResultObserver);
     }
 
-    public void processKeepAlive(Channel session, Protocal pFromClient, String remoteAddress) throws Exception {
+    public void processKeepAlive(Channel session, Protocol pFromClient, String remoteAddress) throws Exception {
         String userId = OnlineProcessor.getUserIdFromChannel(session);
         if (userId != null) {
-            LocalSendHelper.sendData(ProtocalFactory.createPKeepAliveResponse(userId), null);
+            LocalSendHelper.sendData(ProtocolFactory.createPKeepAliveResponse(userId), null);
         } else {
             logger.warn("[IMCORE-{}]>> Server在回客户端{}的响应包时，调用getUserIdFromSession返回null，用户在这一瞬间掉线了？！", Gateway.$(session), remoteAddress);
         }

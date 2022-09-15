@@ -12,11 +12,38 @@
  *  
  * "即时通讯网(52im.net) - 即时通讯开发者社区!" 推荐开源工程。
  * 
- * PKeepAlive.java at 2022-7-12 16:35:56, code by Jack Jiang.
+ * PErrorResponse.java at 2022-7-12 16:35:58, code by Jack Jiang.
  */
-package net.x52im.mobileimsdk.server.protocal.c;
+package net.x52im.mobileimsdk.server.protocol.s;
 
-public class PKeepAlive
+public class PErrorResponse
 {
+	protected int errorCode = -1;
+	protected String errorMsg = null;
+	
+	public PErrorResponse(int errorCode, String errorMsg)
+	{
+		this.errorCode = errorCode;
+		this.errorMsg = errorMsg;
+	}
 
+	public int getErrorCode()
+	{
+		return errorCode;
+	}
+
+	public void setErrorCode(int errorCode)
+	{
+		this.errorCode = errorCode;
+	}
+
+	public String getErrorMsg()
+	{
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg)
+	{
+		this.errorMsg = errorMsg;
+	}
 }

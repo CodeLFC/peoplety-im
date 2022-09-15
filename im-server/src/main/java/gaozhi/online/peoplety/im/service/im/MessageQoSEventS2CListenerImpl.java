@@ -17,10 +17,9 @@
 package gaozhi.online.peoplety.im.service.im;
 
 import net.x52im.mobileimsdk.server.event.MessageQoSEventListenerS2C;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class MessageQoSEventS2CListenerImpl implements MessageQoSEventListenerS2
 	 * 可通过指纹特征码找到原消息并可以UI上将其标记为”发送失败“以便即时告之用户
 	 */
 	@Override
-	public void messagesLost(ArrayList<Protocal> lostMessages)
+	public void messagesLost(ArrayList<Protocol> lostMessages)
 	{
 		logger.debug("【DEBUG_QoS_S2C事件】收到系统的未实时送达事件通知，当前共有"
 						+lostMessages.size()+"个包QoS保证机制结束，判定为【无法实时送达】！");

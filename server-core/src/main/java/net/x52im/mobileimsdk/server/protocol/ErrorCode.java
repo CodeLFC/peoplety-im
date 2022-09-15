@@ -14,7 +14,7 @@
  * 
  * ErrorCode.java at 2022-7-12 16:35:57, code by Jack Jiang.
  */
-package net.x52im.mobileimsdk.server.protocal;
+package net.x52im.mobileimsdk.server.protocol;
 
 /**
  * 错误码常量表.<br>
@@ -35,7 +35,7 @@ public interface ErrorCode
 	/** 数据发送失败 */
 	int COMMON_DATA_SEND_FAILD = 3;
 	
-	/** 无效的 {@link Protocal}对象 */
+	/** 无效的 {@link Protocol}对象 */
 	int COMMON_INVALID_PROTOCAL = 4;
 	
 	/** 由客户端产生的错误码 */

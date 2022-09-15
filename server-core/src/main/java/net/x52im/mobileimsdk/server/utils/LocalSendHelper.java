@@ -27,9 +27,9 @@ import net.x52im.mobileimsdk.server.network.Gateway;
 import net.x52im.mobileimsdk.server.network.GatewayUDP;
 import net.x52im.mobileimsdk.server.network.MBObserver;
 import net.x52im.mobileimsdk.server.processor.OnlineProcessor;
-import net.x52im.mobileimsdk.server.protocal.ErrorCode;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
-import net.x52im.mobileimsdk.server.protocal.ProtocalFactory;
+import net.x52im.mobileimsdk.server.protocol.ErrorCode;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
+import net.x52im.mobileimsdk.server.protocol.ProtocolFactory;
 import net.x52im.mobileimsdk.server.qos.QoS4SendDaemonS2C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +60,10 @@ public class LocalSendHelper
 	
 	public static void sendData(String to_user_id, String dataContent, boolean QoS, String fingerPrint, int typeu, MBObserver resultObserver) throws Exception 
     {
-    	sendData(ProtocalFactory.createCommonData(dataContent, "0", to_user_id, QoS, fingerPrint, typeu), resultObserver);
+    	sendData(ProtocolFactory.createCommonData(dataContent, "0", to_user_id, QoS, fingerPrint, typeu), resultObserver);
     }
     
-    public static void sendData(Protocal p, MBObserver resultObserver) throws Exception 
+    public static void sendData(Protocol p, MBObserver resultObserver) throws Exception
     {
     	if(p != null)
     	{
@@ -83,7 +83,7 @@ public class LocalSendHelper
     	}
     }
     
-    public static void sendData(final Channel session, final Protocal p, final MBObserver resultObserver) throws Exception 
+    public static void sendData(final Channel session, final Protocol p, final MBObserver resultObserver) throws Exception
     {
 		if(session == null)
 		{
@@ -97,7 +97,7 @@ public class LocalSendHelper
 		    	if(p != null)
 		    	{
 		    		if(ServerLauncher.serverTimestamp)
-		    			p.setSm(Protocal.genServerTimestamp());
+		    			p.setSm(Protocol.genServerTimestamp());
 		    		
 		    		Object to = null;
 		    		if(Gateway.isWebSocketChannel(session)){
@@ -144,7 +144,7 @@ public class LocalSendHelper
 			resultObserver.update(false, null);
     }
     
-	public static void replyDataForUnlogined(final Channel session, Protocal p, MBObserver resultObserver) throws Exception
+	public static void replyDataForUnlogined(final Channel session, Protocol p, MBObserver resultObserver) throws Exception
 	{
 		logger.warn("[IMCORE-{}]>> 客户端{}尚未登陆，{}处理未继续."
 				, Gateway.$(session), ServerToolKits.clientInfoToString(session), p.getDataContent());
@@ -163,15 +163,15 @@ public class LocalSendHelper
 			};
 		}
 		
-		Protocal perror = ProtocalFactory.createPErrorResponse(ErrorCode.ForS.RESPONSE_FOR_UNLOGIN, p.toGsonString(), "-1"); // 尚未登陆则user_id就不存在了,用-1表示吧，目前此情形下该参数无意义
+		Protocol perror = ProtocolFactory.createPErrorResponse(ErrorCode.ForS.RESPONSE_FOR_UNLOGIN, p.toGsonString(), "-1"); // 尚未登陆则user_id就不存在了,用-1表示吧，目前此情形下该参数无意义
 		sendData(session, perror, resultObserver);
 	}
 
-	public static void replyRecievedBack(Channel session, Protocal pFromClient, MBObserver resultObserver) throws Exception
+	public static void replyRecievedBack(Channel session, Protocol pFromClient, MBObserver resultObserver) throws Exception
 	{
 		if(pFromClient.isQoS() && pFromClient.getFp() != null)
 		{
-			Protocal receivedBackP = ProtocalFactory.createRecivedBack(pFromClient.getTo(), pFromClient.getFrom(), pFromClient.getFp());
+			Protocol receivedBackP = ProtocolFactory.createRecivedBack(pFromClient.getTo(), pFromClient.getFrom(), pFromClient.getFp());
 			sendData(session, receivedBackP, resultObserver);
 		}
 		else
@@ -195,6 +195,6 @@ public class LocalSendHelper
 				}
 			}
 		};
-		sendData(sessionBeKick, ProtocalFactory.createPKickout(to_user_id, code, reason), sendResultObserver);
+		sendData(sessionBeKick, ProtocolFactory.createPKickout(to_user_id, code, reason), sendResultObserver);
 	}
 }

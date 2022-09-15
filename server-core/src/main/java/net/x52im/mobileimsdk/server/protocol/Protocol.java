@@ -14,12 +14,12 @@
  *
  * Protocal.java at 2022-7-12 16:35:57, code by Jack Jiang.
  */
-package net.x52im.mobileimsdk.server.protocal;
+package net.x52im.mobileimsdk.server.protocol;
 
 import com.google.gson.Gson;
 
 
-public class Protocal {
+public class Protocol implements Cloneable{
     protected boolean bridge = false;
     protected int type = 0;
     protected String dataContent = null;
@@ -33,23 +33,23 @@ public class Protocal {
     protected transient int retryCount = 0;
     protected long sm = -1;
 
-    public Protocal() {
+    public Protocol() {
     }
 
-    public Protocal(int type, String dataContent, String from, String to) {
+    public Protocol(int type, String dataContent, String from, String to) {
         this(type, dataContent, from, to, -1);
     }
 
-    public Protocal(int type, String dataContent, String from, String to, int typeu) {
+    public Protocol(int type, String dataContent, String from, String to, int typeu) {
         this(type, dataContent, from, to, false, null, typeu);
     }
 
-    public Protocal(int type, String dataContent, String from, String to
+    public Protocol(int type, String dataContent, String from, String to
             , boolean QoS, String fingerPrint) {
         this(type, dataContent, from, to, QoS, fingerPrint, -1);
     }
 
-    public Protocal(int type, String dataContent, String from, String to
+    public Protocol(int type, String dataContent, String from, String to
             , boolean QoS, String fingerPrint, int typeu) {
         this.type = type;
         this.dataContent = dataContent;

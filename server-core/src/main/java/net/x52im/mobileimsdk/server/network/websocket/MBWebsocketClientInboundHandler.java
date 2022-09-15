@@ -24,7 +24,7 @@ import io.netty.handler.timeout.ReadTimeoutException;
 import net.x52im.mobileimsdk.server.ServerCoreHandler;
 import net.x52im.mobileimsdk.server.network.Gateway;
 import net.x52im.mobileimsdk.server.network.tcp.MBTCPClientInboundHandler;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
 import net.x52im.mobileimsdk.server.utils.ServerToolKits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public class MBWebsocketClientInboundHandler  extends SimpleChannelInboundHandle
         if (frame instanceof TextWebSocketFrame) {
         	String frameContent = ((TextWebSocketFrame) frame).text();
         	if(frameContent != null){
-            	Protocal pFromClient = ServerToolKits.toProtocal(frameContent);
+            	Protocol pFromClient = ServerToolKits.toProtocal(frameContent);
         		serverCoreHandler.messageReceived(ctx.channel(), pFromClient);
         	}
         	else

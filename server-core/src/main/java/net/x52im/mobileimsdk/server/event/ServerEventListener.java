@@ -17,7 +17,7 @@
 package net.x52im.mobileimsdk.server.event;
 
 import io.netty.channel.Channel;
-import net.x52im.mobileimsdk.server.protocal.Protocal;
+import net.x52im.mobileimsdk.server.protocol.Protocol;
 
 public interface ServerEventListener
 {
@@ -25,11 +25,11 @@ public interface ServerEventListener
 	void onUserLoginSuccess(String userId, String extra, Channel session);
 	void onUserLogout(String userId, Channel session, int beKickoutCode);
 	
-	boolean onTransferMessage4C2SBefore(Protocal p, Channel session);
-	boolean onTransferMessage4C2CBefore(Protocal p, Channel session);
+	boolean onTransferMessage4C2SBefore(Protocol p, Channel session);
+	boolean onTransferMessage4C2CBefore(Protocol p, Channel session);
 	
-	boolean onTransferMessage4C2S(Protocal p, Channel session);
-	void onTransferMessage4C2C(Protocal p);
-	boolean onTransferMessage_RealTimeSendFail(Protocal p);
-	void onTransferMessage4C2C_AfterBridge(Protocal p);
+	boolean onTransferMessage4C2S(Protocol p, Channel session);
+	void onTransferMessage4C2C(Protocol p);
+	boolean onTransferMessage_RealTimeSendFail(Protocol p);
+	void onTransferMessage4C2C_AfterBridge(Protocol p);
 }

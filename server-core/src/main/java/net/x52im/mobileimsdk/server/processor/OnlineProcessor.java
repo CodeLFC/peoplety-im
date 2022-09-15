@@ -19,7 +19,7 @@ package net.x52im.mobileimsdk.server.processor;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import net.x52im.mobileimsdk.server.network.Gateway;
-import net.x52im.mobileimsdk.server.protocal.s.PKickoutInfo;
+import net.x52im.mobileimsdk.server.protocol.s.PKickoutInfo;
 import net.x52im.mobileimsdk.server.utils.LocalSendHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
