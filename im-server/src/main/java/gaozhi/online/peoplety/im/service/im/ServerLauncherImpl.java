@@ -34,8 +34,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-
 /**
  * IM服务的启动主类。
  * <p>
@@ -87,8 +85,8 @@ public class ServerLauncherImpl extends ServerLauncher implements InitializingBe
         ServerLauncher.supportedGateways = Gateway.SOCKET_TYPE_UDP | Gateway.SOCKET_TYPE_TCP | Gateway.SOCKET_TYPE_WEBSOCKET;
 
         // 开/关Demog日志的输出
-        QoS4SendDaemonS2C.getInstance().setDebugable(true);
-        QoS4ReciveDaemonC2S.getInstance().setDebugable(true);
+        QoS4SendDaemonS2C.getInstance().setDebug(true);
+        QoS4ReciveDaemonC2S.getInstance().setDebug(true);
 
         // 与客户端协商一致的心跳频率模式设置
 //		ServerToolKits.setSenseModeUDP(SenseModeUDP.MODE_15S);

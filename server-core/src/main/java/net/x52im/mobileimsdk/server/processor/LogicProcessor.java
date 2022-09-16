@@ -64,7 +64,7 @@ public class LogicProcessor {
             );
 
             if (hasRecieved) {
-                if (QoS4ReciveDaemonC2S.getInstance().isDebugable()) {
+                if (QoS4ReciveDaemonC2S.getInstance().isDebug()) {
                     logger.debug("[IMCORE-本机QoS！]【QoS机制】" + pFromClient.getFp() + "因已经存在于发送列表中，这是重复包，本次忽略通知业务处理层（只需要回复ACK就行了）！");
                 }
 

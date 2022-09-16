@@ -52,17 +52,20 @@ public class QoS4SendDaemonRoot
 			, int QOS_TRY_COUNT
 			, boolean DEBUG, String debugTag)
 	{
-		if(CHECH_INTERVAL > 0)
+		if(CHECH_INTERVAL > 0) {
 			this.CHECH_INTERVAL = CHECH_INTERVAL;
-		if(MESSAGES_JUST$NOW_TIME > 0)
+		}
+		if(MESSAGES_JUST$NOW_TIME > 0) {
 			this.MESSAGES_JUST$NOW_TIME = MESSAGES_JUST$NOW_TIME;
-		if(QOS_TRY_COUNT >= 0)
+		}
+		if(QOS_TRY_COUNT >= 0) {
 			this.QOS_TRY_COUNT = QOS_TRY_COUNT;
+		}
 		this.DEBUG = DEBUG;
 		this.debugTag = debugTag;
 	}
 	
-	private void doTaskOnece()
+	private void doTaskOnce()
 	{
 		if(!_excuting)
 		{
@@ -70,8 +73,9 @@ public class QoS4SendDaemonRoot
 			_excuting = true;
 			try
 			{
-				if(DEBUG && sentMessages.size() > 0)
+				if(DEBUG && sentMessages.size() > 0) {
 					logger.debug("【IMCORE"+this.debugTag+"】【QoS发送方】====== 消息发送质量保证线程运行中, 当前需要处理的列表长度为"+sentMessages.size()+"...");
+				}
 
 				//** 遍历HashMap方法二（在大数据量情况下，方法二的性能要5倍优于方法一）
 				Iterator<Entry<String, Protocol>> entryIt = sentMessages.entrySet().iterator();
@@ -85,9 +89,10 @@ public class QoS4SendDaemonRoot
 					{
 						if(p.getRetryCount() >= QOS_TRY_COUNT)
 						{
-							if(DEBUG)
+							if(DEBUG) {
 								logger.debug("【IMCORE"+this.debugTag+"】【QoS发送方】指纹为"+p.getFp()
 										+"的消息包重传次数已达"+p.getRetryCount()+"(最多"+QOS_TRY_COUNT+"次)上限，将判定为丢包！");
+							}
 
 							lostMessages.add((Protocol)p.clone());
 							remove(p.getFp());
@@ -99,9 +104,10 @@ public class QoS4SendDaemonRoot
 							long delta = System.currentTimeMillis() - (sendMessageTimestamp == null?0 : sendMessageTimestamp);
 							if(delta <= MESSAGES_JUST$NOW_TIME)
 							{
-								if(DEBUG)
+								if(DEBUG) {
 									logger.warn("【IMCORE"+this.debugTag+"】【QoS发送方】指纹为"+key+"的包距\"刚刚\"发出才"+delta
 										+"ms(<="+MESSAGES_JUST$NOW_TIME+"ms将被认定是\"刚刚\"), 本次不需要重传哦.");
+								}
 							}
 							//### 2015103 Bug Fix END
 							else
@@ -144,12 +150,14 @@ public class QoS4SendDaemonRoot
 			}
 			catch (Exception eee)
 			{
-				if(DEBUG)
+				if(DEBUG) {
 					logger.warn("【IMCORE"+this.debugTag+"】【QoS发送方】消息发送质量保证线程运行时发生异常,"+eee.getMessage(), eee);
+				}
 			}
 
-			if(lostMessages != null && lostMessages.size() > 0)
+			if(lostMessages != null && lostMessages.size() > 0) {
 				notifyMessageLost(lostMessages);
+			}
 
 			_excuting = false;
 		}
@@ -157,8 +165,9 @@ public class QoS4SendDaemonRoot
 	
 	protected void notifyMessageLost(ArrayList<Protocol> lostMessages)
 	{
-		if(serverLauncher != null && serverLauncher.getServerMessageQoSEventListener() != null)
+		if(serverLauncher != null && serverLauncher.getServerMessageQoSEventListener() != null) {
 			serverLauncher.getServerMessageQoSEventListener().messagesLost(lostMessages);
+		}
 	}
 	
 	public QoS4SendDaemonRoot startup(boolean immediately)
@@ -171,7 +180,7 @@ public class QoS4SendDaemonRoot
 			@Override
 			public void run()
 			{
-				doTaskOnece();
+				doTaskOnce();
 			}
 		}
 		, immediately ? 0 : CHECH_INTERVAL
@@ -209,28 +218,32 @@ public class QoS4SendDaemonRoot
 	{
 		if(p == null)
 		{
-			if(DEBUG)
+			if(DEBUG) {
 				logger.warn(this.debugTag+"Invalid arg p==null.");
+			}
 			return;
 		}
 		if(p.getFp() == null)
 		{
-			if(DEBUG)
+			if(DEBUG) {
 				logger.warn(this.debugTag+"Invalid arg p.getFp() == null.");
+			}
 			return;
 		}
 		
 		if(!p.isQoS())
 		{
-			if(DEBUG)
+			if(DEBUG) {
 				logger.warn(this.debugTag+"This protocal is not QoS pkg, ignore it!");
+			}
 			return;
 		}
 		
 		if(sentMessages.get(p.getFp()) != null)
 		{
-			if(DEBUG)
+			if(DEBUG) {
 				logger.warn("【IMCORE"+this.debugTag+"】【QoS发送方】指纹为"+p.getFp()+"的消息已经放入了发送质量保证队列，该消息为何会重复？（生成的指纹码重复？还是重复put？）");
+			}
 		}
 		
 		sentMessages.put(p.getFp(), p);
@@ -244,14 +257,16 @@ public class QoS4SendDaemonRoot
 			// remove it
 			sendMessagesTimestamp.remove(fingerPrint);
 			Object result = sentMessages.remove(fingerPrint);
-			if(DEBUG)
+			if(DEBUG) {
 				logger.warn("【IMCORE"+this.debugTag+"】【QoS发送方】指纹为"+fingerPrint+"的消息已成功从发送质量保证队列中移除(可能是收到接收方的应答也可能是达到了重传的次数上限)，重试次数="
 						+(result != null?((Protocol)result).getRetryCount():"none呵呵."));
+			}
 		}
 		catch (Exception e)
 		{
-			if(DEBUG)
+			if(DEBUG) {
 				logger.warn("【IMCORE"+this.debugTag+"】【QoS发送方】remove(fingerPrint)时出错了：", e);
+			}
 		}
 	}
 	
@@ -265,13 +280,13 @@ public class QoS4SendDaemonRoot
 		this.serverLauncher = serverLauncher;
 	}
 
-	public QoS4SendDaemonRoot setDebugable(boolean debugable)
+	public QoS4SendDaemonRoot setDebug(boolean debugable)
 	{
 		this.DEBUG = debugable;
 		return this;
 	}
 	
-	public boolean isDebugable()
+	public boolean isDebug()
 	{
 		return this.DEBUG;
 	}

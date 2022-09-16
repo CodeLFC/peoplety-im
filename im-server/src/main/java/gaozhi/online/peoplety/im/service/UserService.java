@@ -3,11 +3,14 @@ package gaozhi.online.peoplety.im.service;
 import gaozhi.online.base.interceptor.HeaderChecker;
 import gaozhi.online.base.result.Result;
 import gaozhi.online.peoplety.entity.Message;
+import gaozhi.online.peoplety.feign.UserFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -18,10 +21,18 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class UserService {
+
     private static final String CHECK_AUTH_URL = "http://APP-PEOPLETY-USER/general/user/post/check_auth";
     private static final String POST_MSG_URL = "http://APP-PEOPLETY-USER/general/user/post/message";
     @Autowired
     private RestTemplate restTemplate;
+    @Resource
+    private UserFeignClient userFeignClient;
+
+    public Result checkToken(String token, String url, String clientIp) {
+        //创建请求头
+        return userFeignClient.checkAuth(token, url, clientIp);
+    }
 
     public Result checkAuth(String token, String url, String ip) {
         //设置请求头参数

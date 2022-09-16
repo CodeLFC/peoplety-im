@@ -127,8 +127,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public boolean onTransferMessage4C2CBefore(Protocol p, Channel session) {
-        //生成唯一ID
-        generateProtocolId(p);
+
         return true;
     }
 
@@ -147,8 +146,7 @@ public class ServerEventListenerImpl implements ServerEventListener {
      */
     @Override
     public boolean onTransferMessage4C2SBefore(Protocol p, Channel session) {
-        //生成唯一ID
-        generateProtocolId(p);
+
         return true;
     }
 
@@ -303,13 +301,5 @@ public class ServerEventListenerImpl implements ServerEventListener {
     @Override
     public void onTransferMessage4C2C_AfterBridge(Protocol p) {
         // 默认本方法可
-    }
-
-    /**
-     * 生成消息ID
-     */
-    private void generateProtocolId(Protocol protocol) {
-        protocol.setFp(String.valueOf(Message.generateId()));
-        logger.info("生成消息的指纹ID：{}", protocol.getFp());
     }
 }

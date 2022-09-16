@@ -27,9 +27,9 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class QoS4ReciveDaemonRoot
+public class QoS4ReceiveDaemonRoot
 {
-	private static Logger logger = LoggerFactory.getLogger(QoS4ReciveDaemonRoot.class);  
+	private static Logger logger = LoggerFactory.getLogger(QoS4ReceiveDaemonRoot.class);
 
 	private boolean DEBUG = false;
 	private int CHECH_INTERVAL = 5 * 60 * 1000; // 5分钟
@@ -40,13 +40,15 @@ public class QoS4ReciveDaemonRoot
 	private boolean _excuting = false;
 	private String debugTag = "";
 	
-	public QoS4ReciveDaemonRoot(int CHECH_INTERVAL, int MESSAGES_VALID_TIME
+	public QoS4ReceiveDaemonRoot(int CHECH_INTERVAL, int MESSAGES_VALID_TIME
 			, boolean DEBUG, String debugTag)
 	{
-		if(CHECH_INTERVAL > 0)
+		if(CHECH_INTERVAL > 0) {
 			this.CHECH_INTERVAL = CHECH_INTERVAL;
-		if(MESSAGES_VALID_TIME > 0)
+		}
+		if(MESSAGES_VALID_TIME > 0) {
 			this.MESSAGES_VALID_TIME = MESSAGES_VALID_TIME;
+		}
 		this.DEBUG = DEBUG;
 		this.debugTag = debugTag;
 	}
@@ -57,8 +59,9 @@ public class QoS4ReciveDaemonRoot
 		{
 			_excuting = true;
 			
-			if(DEBUG)
+			if(DEBUG) {
 				logger.debug("【IMCORE"+this.debugTag+"】【QoS接收方】+++++ START 暂存处理线程正在运行中，当前长度"+recievedMessages.size()+".");
+			}
 			
 			//** 遍历HashMap方法二（在大数据量情况下，方法二的性能要5倍优于方法一）
 			Iterator<Entry<String, Long>> entryIt = recievedMessages.entrySet().iterator();  
@@ -71,16 +74,18 @@ public class QoS4ReciveDaemonRoot
 		        long delta = System.currentTimeMillis() - value;
 				if(delta >= MESSAGES_VALID_TIME)
 				{
-					if(DEBUG)
+					if(DEBUG) {
 						logger.debug("【IMCORE"+this.debugTag+"】【QoS接收方】指纹为"+key+"的包已生存"+delta
 							+"ms(最大允许"+MESSAGES_VALID_TIME+"ms), 马上将删除之.");
+					}
 					recievedMessages.remove(key);
 				}
 		    }  
 		}
 
-		if(DEBUG)
+		if(DEBUG) {
 			logger.debug("【IMCORE"+this.debugTag+"】【QoS接收方】+++++ END 暂存处理线程正在运行中，当前长度"+recievedMessages.size()+".");
+		}
 	
 		//
 		_excuting = false;
@@ -164,13 +169,13 @@ public class QoS4ReciveDaemonRoot
 		return recievedMessages.size();
 	}
 	
-	public QoS4ReciveDaemonRoot setDebugable(boolean debugable)
+	public QoS4ReceiveDaemonRoot setDebug(boolean debugable)
 	{
 		this.DEBUG = debugable;
 		return this;
 	}
 	
-	public boolean isDebugable()
+	public boolean isDebug()
 	{
 		return this.DEBUG;
 	}
